@@ -1,6 +1,7 @@
 package controller
 
 import (
+	"fmt"
 	"net/http"
 
 	"tog.test/no6/config"
@@ -8,7 +9,6 @@ import (
 	"tog.test/no6/model"
 
 	"github.com/gin-gonic/gin"
-	"github.com/ulule/deepcopier"
 )
 
 func AddCart(c *gin.Context) {
@@ -48,7 +48,7 @@ func AddCart(c *gin.Context) {
 	}
 	db.Save(&shoppingCart)
 
-	c.JSON(http.StatusOK, "success add cart")
+	c.JSON(http.StatusCreated, "success add cart")
 }
 
 func ShowCart(c *gin.Context) {
@@ -57,7 +57,7 @@ func ShowCart(c *gin.Context) {
 	nameProduct := c.DefaultQuery("namaProduct", "")
 	quantity := c.DefaultQuery("quantity", "")
 
-	var response []dto.ResShoppingCart
+	var response []string
 	var shoppingCart []model.ShoppingCart
 
 	//connect db
@@ -72,7 +72,6 @@ func ShowCart(c *gin.Context) {
 		querry.Where("name_product LIKE ?", "%"+nameProduct+"%")
 	}
 	if quantity != "" {
-		// qts ,_ :=strconv.Atoi(quantity)
 		querry.Where("quantity = ?", quantity)
 	}
 
@@ -80,13 +79,7 @@ func ShowCart(c *gin.Context) {
 		Find(&shoppingCart)
 
 	for i := 0; i < len(shoppingCart); i++ {
-		response = append(response, dto.ResShoppingCart{
-			NameProduct: shoppingCart[i].NameProduct,
-			CodeProduct: shoppingCart[i].CodeProduct,
-			Quantity:    shoppingCart[i].Quantity,
-			ID:          shoppingCart[i].ID,
-		})
-		deepcopier.Copy(&shoppingCart).To(response)
+		response = append(response, fmt.Sprintf("%s - %s - (%v)", shoppingCart[i].CodeProduct, shoppingCart[i].NameProduct, shoppingCart[i].Quantity))
 
 	}
 
@@ -109,7 +102,7 @@ func DeleteCart(c *gin.Context) {
 	db.Model(&model.ShoppingCart{}).
 		Where("user_id = ?", userId).
 		Where("code_product = ?", code).
-		Delete(&shoppingCart)
+		Find(&shoppingCart)
 
 	if shoppingCart.ID != 0 {
 		db.Delete(&shoppingCart)

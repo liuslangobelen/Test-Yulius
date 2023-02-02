@@ -4,7 +4,7 @@ import "fmt"
 
 func main() {
 
-	fmt.Print("masukkan ")
+	fmt.Print("masukkan angka : ")
 
 	var input int64
 	var output string
@@ -22,5 +22,8 @@ func main() {
 		}
 	}
 	fmt.Println("output: \n", output)
+
+	fmt.Scanf("press enter to close")
+	fmt.Scanf("%d", &input)
 
 }

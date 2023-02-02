@@ -1,0 +1,1 @@
+nodemon -e go --exec go test

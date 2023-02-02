@@ -49,4 +49,8 @@ func main() {
 	}
 
 	fmt.Println("RESULT : ", result)
+
+	fmt.Scanf("press enter to close")
+	fmt.Scanf("%d", &input1)
+
 }
